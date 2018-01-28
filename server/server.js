@@ -1,8 +1,16 @@
 const express = require("express");
 const path = require("path");
+const app = express();
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
 const port = process.env.PORT || 5000;
 
-const app = express();
 app.use(express.static(path.join(__dirname, "../public")));
 
-app.listen(port, () => console.log(`App running on port ${port}`));
+io.on("connection", (socket) => {
+  console.log("New user connected");
+
+  socket.on("disconnect", () => console.log("Client leaving :( "));
+});
+
+server.listen(port, () => console.log(`App running on port ${port}`));
