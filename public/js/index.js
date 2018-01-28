@@ -14,20 +14,45 @@ $(function () {
   });
 
   //chat functionality
+  const messageTextBox = $("#form-msg");
+  const sendButton = $('[type="submit"]');
+
+  messageTextBox.on("focus focusin", function (e) {
+    if (!e.target.value) {
+      sendButton.attr("disabled", "disabled");
+    } else {
+      sendButton.removeAttr("disabled");
+    }
+  });
+
+  messageTextBox.on("blur focusout", function (e) {
+    if (!e.target.value) {
+      sendButton.attr("disabled", "disabled");
+    } else {
+      sendButton.removeAttr("disabled");
+    }
+  });
+  messageTextBox.on("input", function (e) {
+    if (!e.target.value) {
+      sendButton.attr("disabled", "disabled");
+    } else {
+      sendButton.removeAttr("disabled");
+    }
+  });
+
   $("#message-form").on("submit", function (e) {
     e.preventDefault();
-    const messageBody = $("#form-msg");
     socket.emit(
       "createMessage",
       {
         from: "Gee",
-        body: messageBody.val(),
+        body: messageTextBox.val(),
       },
       function () {
-        console.log("Hola got your message");
+        messageTextBox.val("");
+        sendButton.attr("disabled", "disabled");
       }
     );
-    messageBody.val("");
   });
 
   //Geolocation feature
@@ -36,15 +61,18 @@ $(function () {
     if (!navigator.geolocation) {
       return alert("geolocation does not exist for your browser");
     }
+    locationButton.attr("disabled", "disabled").text("Sending location...");
     const successHandler = function (position) {
+      locationButton.removeAttr("disabled").text("Send location");
       socket.emit("createLocationMessage", {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       });
     };
-    const failureHandler = function (e) {
-      console.log(e);
+    const failureHandler = function (err) {
+      console.log(err);
       alert("Unable to fetch location");
+      locationButton.removeAttr("disabled").text("Send location");
     };
     navigator.geolocation.getCurrentPosition(successHandler, failureHandler);
   });

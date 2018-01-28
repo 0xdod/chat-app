@@ -10,8 +10,6 @@ const port = process.env.PORT || 5000;
 app.use(express.static(path.join(__dirname, "../public")));
 
 io.on("connection", (socket) => {
-  console.log("New user connected");
-
   socket.emit("newMessage", genMessage("Admin", "Welcome to the chat room"));
 
   socket.broadcast.emit(
