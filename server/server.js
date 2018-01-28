@@ -14,7 +14,13 @@ var roomsList = [];
 app.get("/roomslist", (req, res) => {
   res.send({ roomsList });
 });
+app.post("/chat", (req, res) => {
+  res.setHeader("Location", "/chat.html");
+  console.log(req.body);
+  res.status(301).send();
+});
 app.use(express.static(path.join(__dirname, "../public")));
+
 io.on("connection", (socket) => {
   socket.on("join", (params, cbfunc) => {
     const usersList = users.getUsersList(params.room);
