@@ -25,6 +25,7 @@ $(function () {
       if (err) {
         alert(err);
         window.location.href = "/";
+        return;
       } else {
         console.log("Ko si wahala");
       }
