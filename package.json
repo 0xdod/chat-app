@@ -10,8 +10,10 @@
   "engines": {
     "node": "14.3.0"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "Chat app"
+  ],
+  "author": "Damilola Dolor",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
