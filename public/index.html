@@ -2,59 +2,31 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/styles.css" />
-    <title>Chat App</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <title>Join | ChatApp</title>
   </head>
-  <body class="chat">
-    <aside class="chat__sidebar">
-      <h3>Connected</h3>
-      <div id="users"></div>
-    </aside>
-    <main class="chat__main">
-      <ul id="messages" class="chat__messages"></ul>
-      <div class="chat__footer">
-        <form id="message-form">
-          <input
-            id="form-msg"
-            type="text"
-            name="message"
-            autofocus
-            autocomplete="off"
-          />
-          <input type="submit" value="Send" disabled="disabled" />
-        </form>
-        <button id="location">Send location</button>
-      </div>
-    </main>
-    <script type="text/template" id="message-template">
-      <li class="message">
-        <div class="message__title">
-          <h4>{{from}}</h4>
-          <span>{{time}}</span>
+  <body class="centered-form">
+    <div class="centered-form__form">
+      <form action="/chat.html">
+        <div class="form-field">
+          <h3>Join a Chat<h3>
         </div>
-        <div class="message__body">
-          <p>{{body}}</p>
+        <div class="form-field">
+          <label>Display name</label>
+          <input type="text" name="name" autofocus/>
         </div>
-      </li>
-    </script>
-    <script type="text/template" id="location-message-template">
-      <li class="message">
-        <div class="message__title">
-          <h4>{{from}}</h4>
-          <span>{{time}}</span>
+        <div class="form-field">
+          <label>Room name</label>
+          <input type="text" name="room"/>
         </div>
-        <div class="message__body">
-          <p>
-            <a target="_blank" href="{{url}}">Locate me!</a>
-          </p>
+        <div class="form-field">
+          <button>Join</button>
         </div>
-      </li>
-    </script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/lib/jquery.min.js"></script>
-    <script src="js/lib/moment.js"></script>
-    <script src="js/lib/mustache.js"></script>
-    <script src="/js/index.js"></script>
+      </form>
+    </div>
   </body>
 </html>
