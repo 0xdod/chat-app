@@ -1,5 +1,7 @@
 const express = require("express");
 const path = require("path");
+const bodyParser = require("body-parser");
+const _ = require("lodash");
 const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
@@ -9,10 +11,17 @@ const { isRealString } = require("./utils/validate");
 const { genMessage, genLocMessage } = require("./utils/message");
 const port = process.env.PORT || 5000;
 const users = new Users();
-var roomsList = [];
+let roomsList = [];
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.get("/roomslist", (req, res) => {
   res.send({ roomsList });
+});
+app.post("/chat", (req, res) => {
+  res.setHeader("Location", "/chat.html");
+  const body = _.pick(req.body, "name", "room");
+  res.cookie("data", JSON.stringify(body));
+  res.status(301).send();
 });
 app.use(express.static(path.join(__dirname, "../public")));
 io.on("connection", (socket) => {
