@@ -1,6 +1,6 @@
 const expect = require("expect");
 
-const { genMessage } = require("../utils/message");
+const { genMessage, genLocMessage } = require("../utils/message");
 
 expect.extend({
   type(received, type) {
@@ -26,6 +26,18 @@ describe("Generate message", () => {
     const message = genMessage("Admin", "Hola!");
     expect(message.from).toBe("Admin");
     expect(message.body).toBe("Hola!");
-    expect(message.createdAt).type("string");
+    expect(message.createdAt).type("number");
+  });
+});
+
+describe("Generate Location Message", () => {
+  it("should generate a valid location message", () => {
+    const lat = 39.936717,
+      lng = -75.1708349,
+      from = "Admin";
+    const message = genLocMessage(from, lat, lng);
+    expect(message.from).toBe(from);
+    expect(message.url).toBe(`https://www.google.com/maps?q=${lat},${lng}`);
+    expect(message.createdAt).type("number");
   });
 });

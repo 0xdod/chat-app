@@ -7,21 +7,20 @@ $(function () {
   socket.on("disconnect", function () {
     console.log("disonnected");
   });
-
   socket.on("newMessage", function (msg) {
     const li = $("<li></li>");
     li.text(`${msg.from}: ${msg.body}`);
     $("#msg-list").append(li);
-    console.log(`New message from ${msg.from}`, msg);
   });
 
+  //chat functionality
   $("#message-form").on("submit", function (e) {
     e.preventDefault();
     const messageBody = $("#form-msg");
     socket.emit(
       "createMessage",
       {
-        from: "Guy Mans",
+        from: "Gee",
         body: messageBody.val(),
       },
       function () {
@@ -31,22 +30,32 @@ $(function () {
     messageBody.val("");
   });
 
+  //Geolocation feature
   const locationButton = $("#location");
   locationButton.on("click", function () {
     if (!navigator.geolocation) {
       return alert("geolocation does not exist for your browser");
     }
-    navigator.geolocation.getCurrentPosition(
-      function (position) {
-        socket.emit("createLocationMessage", {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-      },
-      function (e) {
-        console.log(e);
-        alert("Unable to fetch location");
-      }
-    );
+    const successHandler = function (position) {
+      socket.emit("createLocationMessage", {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      });
+    };
+    const failureHandler = function (e) {
+      console.log(e);
+      alert("Unable to fetch location");
+    };
+    navigator.geolocation.getCurrentPosition(successHandler, failureHandler);
+  });
+
+  //handle location message
+  socket.on("newLocationMessage", function (message) {
+    const li = $("<li></li>");
+    const a = $('<a target="_blank"></a>');
+    a.attr("href", message.url);
+    li.text(message.from + ": ");
+    li.append(a);
+    $("#msg-list").append(li);
   });
 });
