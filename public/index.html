@@ -8,14 +8,6 @@
   <body>
     <p>Welcome to node chat app</p>
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-      const socket = io();
-      socket.on("connect", () => {
-        console.log("Connected");
-      });
-      socket.on("disconnect", () => {
-        console.log("disonnected");
-      });
-    </script>
+    <script src="./js/index.js"></script>
   </body>
 </html>
