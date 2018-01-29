@@ -1,21 +1,27 @@
 $(function () {
   const socket = io();
-
   socket.on("connect", function () {
     console.log("Connected");
   });
   socket.on("disconnect", function () {
     console.log("disonnected");
   });
-  socket.on("newMessage", function (msg) {
-    const li = $("<li></li>");
-    li.text(`${msg.from}: ${msg.body}`);
-    $("#msg-list").append(li);
-  });
 
   //chat functionality
+  const messages = $("#messages");
   const messageTextBox = $("#form-msg");
   const sendButton = $('[type="submit"]');
+
+  socket.on("newMessage", function (message) {
+    const formattedTime = moment(message.createdAt).format("h:mm a");
+    const template = $("#message-template").html();
+    const html = Mustache.render(template, {
+      from: message.from,
+      body: message.body,
+      time: formattedTime,
+    });
+    messages.append(html);
+  });
 
   messageTextBox.on("focus focusin", function (e) {
     if (!e.target.value) {
@@ -24,7 +30,6 @@ $(function () {
       sendButton.removeAttr("disabled");
     }
   });
-
   messageTextBox.on("blur focusout", function (e) {
     if (!e.target.value) {
       sendButton.attr("disabled", "disabled");
@@ -70,20 +75,22 @@ $(function () {
       });
     };
     const failureHandler = function (err) {
+      locationButton.removeAttr("disabled").text("Send location");
       console.log(err);
       alert("Unable to fetch location");
-      locationButton.removeAttr("disabled").text("Send location");
     };
     navigator.geolocation.getCurrentPosition(successHandler, failureHandler);
   });
 
   //handle location message
   socket.on("newLocationMessage", function (message) {
-    const li = $("<li></li>");
-    const a = $('<a target="_blank"></a>');
-    a.attr("href", message.url);
-    li.text(message.from + ": ");
-    li.append(a);
-    $("#msg-list").append(li);
+    const formattedTime = moment(message.createdAt).format("h:mm a");
+    const template = $("#location-message-template").html();
+    const html = Mustache.render(template, {
+      from: message.from,
+      url: message.url,
+      time: formattedTime,
+    });
+    messages.append(html);
   });
 });
