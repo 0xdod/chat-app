@@ -1,5 +1,23 @@
 $(function () {
   const socket = io();
+  const messages = $("#messages");
+  const messageTextBox = $("#form-msg");
+  const sendButton = $('[type="submit"]');
+  const scrollToBottom = function () {
+    const newMessage = messages.children("li:last-child");
+    const clientHeight = messages.prop("clientHeight");
+    const scrollHeight = messages.prop("scrollHeight");
+    const scrollTop = messages.prop("scrollTop");
+    const newMessageHeight = newMessage.innerHeight();
+    const prevMessageHeight = newMessage.prev().innerHeight();
+    if (
+      clientHeight + scrollTop + newMessageHeight + prevMessageHeight >=
+      scrollHeight
+    ) {
+      messages.scrollTop(scrollHeight);
+    }
+  };
+
   socket.on("connect", function () {
     console.log("Connected");
   });
@@ -8,10 +26,6 @@ $(function () {
   });
 
   //chat functionality
-  const messages = $("#messages");
-  const messageTextBox = $("#form-msg");
-  const sendButton = $('[type="submit"]');
-
   socket.on("newMessage", function (message) {
     const formattedTime = moment(message.createdAt).format("h:mm a");
     const template = $("#message-template").html();
@@ -21,6 +35,7 @@ $(function () {
       time: formattedTime,
     });
     messages.append(html);
+    scrollToBottom();
   });
 
   messageTextBox.on("focus focusin", function (e) {
@@ -92,5 +107,6 @@ $(function () {
       time: formattedTime,
     });
     messages.append(html);
+    scrollToBottom();
   });
 });
