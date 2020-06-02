@@ -19,8 +19,9 @@ io.on("connection", (socket) => {
     genMessage("Admin", "New user joined the chat")
   );
 
-  socket.on("createMessage", (data) => {
+  socket.on("createMessage", (data, cb) => {
     io.emit("newMessage", genMessage(data.from, data.body));
+    cb();
   });
   socket.on("disconnect", () => console.log("Client leaving :( "));
 });

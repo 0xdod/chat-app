@@ -7,7 +7,14 @@
   </head>
   <body>
     <p>Welcome to node chat app</p>
+    <ul id="msg-list"></ul>
+    <form id="message-form">
+      <input id="form-msg" type="text" name="message" />
+      <input type="submit" value="Send" />
+    </form>
+
     <script src="/socket.io/socket.io.js"></script>
-    <script src="./js/index.js"></script>
+    <script src="/js/lib/jquery.min.js"></script>
+    <script src="/js/index.js"></script>
   </body>
 </html>
