@@ -19,9 +19,16 @@ io.on("connection", (socket) => {
     genMessage("Admin", "New user joined the chat")
   );
 
-  socket.on("createMessage", (data, cb) => {
-    io.emit("newMessage", genMessage(data.from, data.body));
+  socket.on("createMessage", (msg, cb) => {
+    io.emit("newMessage", genMessage(msg.from, msg.body));
     cb();
+  });
+
+  socket.on("createLocationMessage", (coord) => {
+    io.emit(
+      "newMessage",
+      genMessage("Admin", `latitude:${coord.lat}, longitude: ${coord.lng}`)
+    );
   });
   socket.on("disconnect", () => console.log("Client leaving :( "));
 });
