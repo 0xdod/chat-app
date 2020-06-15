@@ -38,21 +38,7 @@ $(function () {
     scrollToBottom();
   });
 
-  messageTextBox.on("focus focusin", function (e) {
-    if (!e.target.value) {
-      sendButton.attr("disabled", "disabled");
-    } else {
-      sendButton.removeAttr("disabled");
-    }
-  });
-  messageTextBox.on("blur focusout", function (e) {
-    if (!e.target.value) {
-      sendButton.attr("disabled", "disabled");
-    } else {
-      sendButton.removeAttr("disabled");
-    }
-  });
-  messageTextBox.on("input", function (e) {
+  messageTextBox.on("focusin focusout input", function (e) {
     if (!e.target.value) {
       sendButton.attr("disabled", "disabled");
     } else {
