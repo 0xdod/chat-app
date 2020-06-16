@@ -3,7 +3,6 @@ $(function () {
   var messages = $("#messages");
   var messageTextBox = $("#form-msg");
   var sendButton = $('[type="submit"]');
-  var userName = "Gee";
   var scrollToBottom = function () {
     var newMessage = messages.children("li:last-child");
     var clientHeight = messages.prop("clientHeight");
@@ -21,7 +20,7 @@ $(function () {
 
   socket.on("connect", function () {
     var params = $.deparam(window.location.search);
-    userName = params.name;
+    params.room = params.room.toLowerCase();
     socket.emit("join", params, function (err) {
       if (err) {
         alert(err);
