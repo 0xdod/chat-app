@@ -1,15 +1,16 @@
 $(function () {
-  const socket = io();
-  const messages = $("#messages");
-  const messageTextBox = $("#form-msg");
-  const sendButton = $('[type="submit"]');
-  const scrollToBottom = function () {
-    const newMessage = messages.children("li:last-child");
-    const clientHeight = messages.prop("clientHeight");
-    const scrollHeight = messages.prop("scrollHeight");
-    const scrollTop = messages.prop("scrollTop");
-    const newMessageHeight = newMessage.innerHeight();
-    const prevMessageHeight = newMessage.prev().innerHeight();
+  var socket = io();
+  var messages = $("#messages");
+  var messageTextBox = $("#form-msg");
+  var sendButton = $('[type="submit"]');
+  var userName = "Gee";
+  var scrollToBottom = function () {
+    var newMessage = messages.children("li:last-child");
+    var clientHeight = messages.prop("clientHeight");
+    var scrollHeight = messages.prop("scrollHeight");
+    var scrollTop = messages.prop("scrollTop");
+    var newMessageHeight = newMessage.innerHeight();
+    var prevMessageHeight = newMessage.prev().innerHeight();
     if (
       clientHeight + scrollTop + newMessageHeight + prevMessageHeight >=
       scrollHeight
@@ -19,17 +20,35 @@ $(function () {
   };
 
   socket.on("connect", function () {
-    console.log("Connected");
+    var params = $.deparam(window.location.search);
+    userName = params.name;
+    socket.emit("join", params, function (err) {
+      if (err) {
+        alert(err);
+        window.location.href = "/";
+      } else {
+        console.log("Ko si wahala");
+      }
+    });
   });
+
   socket.on("disconnect", function () {
     console.log("disonnected");
   });
 
+  socket.on("updateUsersList", function (users) {
+    var ol = $("<ul></ul>");
+    users.forEach(function (user) {
+      ol.append($("<li></li>").text(user));
+    });
+    $("#users").html(ol);
+  });
+
   //chat functionality
   socket.on("newMessage", function (message) {
-    const formattedTime = moment(message.createdAt).format("h:mm a");
-    const template = $("#message-template").html();
-    const html = Mustache.render(template, {
+    var formattedTime = moment(message.createdAt).format("h:mm a");
+    var template = $("#message-template").html();
+    var html = Mustache.render(template, {
       from: message.from,
       body: message.body,
       time: formattedTime,
@@ -51,7 +70,6 @@ $(function () {
     socket.emit(
       "createMessage",
       {
-        from: "Gee",
         body: messageTextBox.val(),
       },
       function () {
@@ -62,20 +80,20 @@ $(function () {
   });
 
   //Geolocation feature
-  const locationButton = $("#location");
+  var locationButton = $("#location");
   locationButton.on("click", function () {
     if (!navigator.geolocation) {
       return alert("geolocation does not exist for your browser");
     }
     locationButton.attr("disabled", "disabled").text("Sending location...");
-    const successHandler = function (position) {
+    var successHandler = function (position) {
       locationButton.removeAttr("disabled").text("Send location");
       socket.emit("createLocationMessage", {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       });
     };
-    const failureHandler = function (err) {
+    var failureHandler = function (err) {
       locationButton.removeAttr("disabled").text("Send location");
       console.log(err);
       alert("Unable to fetch location");
@@ -85,9 +103,9 @@ $(function () {
 
   //handle location message
   socket.on("newLocationMessage", function (message) {
-    const formattedTime = moment(message.createdAt).format("h:mm a");
-    const template = $("#location-message-template").html();
-    const html = Mustache.render(template, {
+    var formattedTime = moment(message.createdAt).format("h:mm a");
+    var template = $("#location-message-template").html();
+    var html = Mustache.render(template, {
       from: message.from,
       url: message.url,
       time: formattedTime,
