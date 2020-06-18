@@ -19,7 +19,9 @@ $(function () {
   };
 
   socket.on("connect", function () {
-    var params = $.deparam(window.location.search);
+    const decodedCookie = decodeURIComponent(document.cookie);
+    data = decodedCookie.split("=")[1];
+    let params = JSON.parse(data);
     params.room = params.room.toLowerCase();
     socket.emit("join", params, function (err) {
       if (err) {
